@@ -1,0 +1,96 @@
+# результат на колекції
+# total number of words = 27743838
+# number of unique words = 49452
+# розмір злитого інвертованого індекса
+# merged bsbi size in kb = 1302.394
+# час злиття = 48.4822723865509
+
+    # region Temporary printing
+    print('рядок слів')
+    print(word_string[:30])
+    print('вказівники на слова')
+    print(word_pointers[:30])
+    print('частоти слів')
+    print(word_frequencies[:30])
+    print('вказівники на інвертовані індекси')
+    print(file_pointers[:30])
+    # endregion
+
+print(get_inverted_list('wrenching'))
+
+
+total number of words = 1183681325
+
+
+
+перша версія словника (слово, частота, вказівник)
+592 317 bytes = 34 709 words
+17 bytes per word
+
+друга версія словника (рядок слів та (вказівник на слово, частота, вказівник на індекс))
+474 859 bytes = 34 708 words
+13,6 bytes per word
+
+третя версія словник (друга версія, але списки із вказівниками з проміжками, а не значеннями)
+349 948 bytes = 34 708 words
+10 bytes per word
+
+
+
+
+
+
+
+
+encoded_index = {'cafeteria': [128], 'cage': [128], 'caging': [128], 'cake': [128], 'eteriacafscagecagingcaiaphascaincainancakecake': [128], 'scain': [128]}
+not_encoded_index = {'cafeteria': {0: 1}, 'cage': {0: 1}, 'caging': {0: 1}, 'cake': {0: 2}, 'eteriacafscagecagingcaiaphascaincainancakecake': {0: 1}, 'scain': {0: 1}}
+
+# [3, 4, 5, 7, 8, 9] - 'hello'
+# [4, 5] - 'wrenching'
+
+zone scoring retrieval function
+    # max_value = max(file_relevance.values())  # maximum value
+    # counter = 0
+    # for key, value in file_relevance.items():
+    #     counter += 1
+    #     if counter <= k and value == max_value:
+    #         result.append(key)
+    #
+    # # return [fb2_collection[i] for i in result]
+    # return result
+
+з файлу кластеризація
+# matrix = create_an_incidence_matrix(big_collection[0:300], 'results/doc-term_matrix.txt')
+# print('matrix created')
+
+def build_matrix(files):
+    terms = []
+    matrix = []
+
+    counter = 0
+    for file in files:
+        counter += 1
+        print(str(counter) + ' ' + file)
+        with open(file, "r") as txt_file:
+            file_content = txt_file.readlines()
+        for item in file_content:
+            array_of_words = item.lower().split()
+            array_of_words = [delete_punctuation(word) for word in array_of_words]
+
+            matrix.append([0] * len(terms))
+            for word in array_of_words:
+                if word not in terms:
+                    terms.append(word)
+                    for doc_vector in matrix:
+                        doc_vector.append(0)
+
+                matrix[-1][terms.index(word)] = 1
+
+    with open('vector_model/matrix.txt', 'w') as file:
+        file.write(json.dumps(matrix))
+    with open('vector_model/dictionary.txt', 'w') as file:
+        file.write(json.dumps(matrix))
+
+    return terms, matrix
+
+    u<>/'>??<>/=
